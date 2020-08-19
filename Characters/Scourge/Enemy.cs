@@ -17,6 +17,9 @@ namespace BattleStage.Characters.Scourge
         private EnemyClassType _enemyClass;
 
         protected bool _isAlive;
+        private bool _Attacking;
+        private bool _Miss;
+        private int _damageDealt;
 
         public Enemy(EnemyClassType enemyClass)
         {
@@ -54,7 +57,39 @@ namespace BattleStage.Characters.Scourge
             }
         }
 
-
+        public bool ISAttacking
+        {
+            get
+            {
+                return _Attacking;
+            }
+            set
+            {
+                _Attacking = value;
+            }
+        }
+        public bool ISMissing
+        {
+            get
+            {
+                return _Miss;
+            }
+            set
+            {
+                _Miss = value;
+            }
+        }
+        public int DamageDealt
+        {
+            get
+            {
+                return _damageDealt;
+            }
+            set
+            {
+                _damageDealt = value;
+            }
+        }
 
         public int GettingHealth(EnemyClassType enemyClass)
         {
@@ -72,116 +107,117 @@ namespace BattleStage.Characters.Scourge
                     return 1;
             }
         }
-
-        public int EnemyCombatSelecter()
+        public void SettingHealth(EnemyClassType enemyClass, int healthNewHealthValue)
         {
-            Random random = new Random();
-
-            return random.Next(1, 3);
-        }
-
-        public void AttackPlayer(HeroClassTypes heroClassTypes, Hero hero, EnemyClassType enemyClass)
-        {
-            int damage;
-
             switch (enemyClass)
             {
                 case EnemyClassType.minion:
-                    damage = minionType.Attack();
-
-                    if (damage == 0)
-                    {
-                        Console.WriteLine("No damage done!");
-                    }
-
-                    AttackPlayerHelper(damage, heroClassTypes, hero);
-
+                    minionType.Health = healthNewHealthValue;
                     break;
                 case EnemyClassType.creeper:
-                    damage = creeperType.Attack();
-
-                    if (damage == 0)
-                    {
-                        Console.WriteLine("No damage done!");
-                    }
-
-                    AttackPlayerHelper(damage, heroClassTypes, hero);
-
+                    creeperType.Health = healthNewHealthValue;
                     break;
                 case EnemyClassType.skeleton:
-                    damage = skeletontype.Attack();
-
-                    if (damage == 0)
-                    {
-                        Console.WriteLine("No damage done!");
-                    }
-
-                    AttackPlayerHelper(damage, heroClassTypes, hero);
-
+                    skeletontype.Health = healthNewHealthValue;
                     break;
                 case EnemyClassType.orc:
-                    damage = orcType.Attack();
-
-                    if (damage == 0)
-                    {
-                        Console.WriteLine("No damage done!");
-                    }
-
-                    AttackPlayerHelper(damage, heroClassTypes, hero);
-
+                    orcType.Health = healthNewHealthValue;
                     break;
                 default:
                     break;
             }
         }
 
-        private void EnemyHealthReduction(Hero hero, int damage, HeroClassTypes heroClass)
+        public void AttackPlayer1(HeroClassTypes heroClassTypes, Hero hero, EnemyClassType enemyClass)
         {
-            int playerHealth;
+            int damage = ReturnDamageDealt(enemyClass);
+            int reducedDamage = EnemyDamageReductionFromDefence(damage, heroClassTypes, hero);
+
+            PlayerHealthReduction1(hero, reducedDamage, heroClassTypes);
+        }
+        private int ReturnDamageDealt(EnemyClassType enemyClass)
+        {
+            int damage = 0;
+            ISAttacking = true;
+
+            switch (enemyClass)
+            {
+                case EnemyClassType.minion:
+                    damage = minionType.Attack();
+                    break;
+                case EnemyClassType.creeper:
+                    damage = creeperType.Attack();
+                    break;
+                case EnemyClassType.skeleton:
+                    damage = skeletontype.Attack();
+                    break;
+                case EnemyClassType.orc:
+                    damage = orcType.Attack();
+                    break;
+                default:
+                    break;
+            }
+
+            if (damage == 0)
+            {
+                Console.WriteLine("No damage done!");
+                ISMissing = true;
+                return 0;
+            }
+            else
+            {
+                ISMissing = false;
+                return damage;
+            }
+
+        }
+        private int EnemyDamageReductionFromDefence(int damage, HeroClassTypes heroClass, Hero hero)
+        {
+            int defence = 0;
+            int reducedDamage = 0;
 
             switch (heroClass)
             {
                 case HeroClassTypes.spearman:
-                    if (hero.heroSpear.Health - damage <= 0)
-                    {
-                        playerHealth = 0;
-                        hero.heroSpear.Health = playerHealth;
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Enemy attacks for {damage}");
-
-                        hero.heroSpear.Health -= damage;
-                    }
+                    defence = hero.heroSpear.Defending();
+                    //reducedDamage = DamageChecker(damage, defence);
                     break;
                 case HeroClassTypes.swordsman:
-                    if (hero.heroSword.Health - damage <= 0)
-                    {
-                        playerHealth = 0;
-                        hero.heroSword.Health = playerHealth;
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Enemy attack for {damage}");
-
-                        hero.heroSword.Health -= damage;
-                    }
+                    defence = hero.heroSword.Defending();
                     break;
                 case HeroClassTypes.ranger:
-                    if (hero.heroRanger.Health - damage <= 0)
-                    {
-                        playerHealth = 0;
-                        hero.heroRanger.Health = playerHealth;
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Enemy attack for {damage}");
-
-                        hero.heroRanger.Health -= damage;
-                    }
+                    defence = hero.heroRanger.Defending();
                     break;
                 default:
                     break;
+            }
+
+            reducedDamage = DamageChecker(damage, defence);
+
+            DamageDealt = reducedDamage;
+
+            return reducedDamage;
+        }
+
+        private void PlayerHealthReduction1(Hero hero, int damage, HeroClassTypes heroClass)
+        {
+            int healthSetter = 0;
+            int enemyHealth = hero.GettingHealth(heroClass);
+
+            int currentHealth = enemyHealth - damage;
+            int healthReduction = enemyHealth - damage;
+
+            if (currentHealth <= 0)
+            {
+                healthSetter = 0;
+                hero.SettingHealth(heroClass, healthSetter);
+                hero.IsAlive = false;
+            }
+            else
+            {
+                Console.WriteLine($"Enemy Attacks for {damage}");
+
+                hero.SettingHealth(heroClass, healthReduction);
             }
         }
 
@@ -197,43 +233,15 @@ namespace BattleStage.Characters.Scourge
             }
         }
 
-        private void AttackPlayerHelper(int damage, HeroClassTypes heroClass, Hero hero)
-        {
-            int defence;
-
-            switch (heroClass)
-            {
-                case HeroClassTypes.spearman:
-
-                    defence = hero.heroSpear.Defending();
-                    damage = DamageChecker(damage, defence);
-
-                    EnemyHealthReduction(hero, damage, heroClass);
-
-                    break;
-                case HeroClassTypes.swordsman:
-
-                    defence = hero.heroSword.Defending();
-                    damage = DamageChecker(damage, defence);
-
-                    EnemyHealthReduction(hero, damage, heroClass);
-
-                    break;
-                case HeroClassTypes.ranger:
-
-                    defence = hero.heroRanger.Defending();
-                    damage = DamageChecker(damage, defence);
-
-                    EnemyHealthReduction(hero, damage, heroClass);
-
-                    break;
-                default:
-                    break;
-            }
-        }
-
         public void EnemyDefend(EnemyClassType enemyClass, bool defending)
         {
+            DamageDealt = 0;
+
+            if (defending == true)
+            {
+                ISAttacking = false;
+            }
+
             switch (enemyClass)
             {
                 case EnemyClassType.minion:

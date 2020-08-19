@@ -7,6 +7,7 @@ using BattleStage.Characters;
 using BattleStage.Enums;
 using BattleStage.MenuInput;
 using BattleStage.Characters.Scourge;
+using BattleStage.Equipment;
 
 namespace BattleStage
 {
@@ -17,93 +18,63 @@ namespace BattleStage
             HeroClassTypes heroClassTypes;
             EnemyClassType enemyClassType;
 
+            StateManager stateManager = new StateManager();
+            ItemManager itemManager = new ItemManager();
+
             string userInput;
             string userName;
 
             int playerCombatSelecter;
             int enemyCombatSelecter;
 
-            /*Have hero select screne
-             * Neaten up text and layout
-             * Create Item usage
-             * generate level - number of enemies per level - every 10 levels have boss
-             * experience gain
-             * win lose
-             * next level or game over
+            /*NEXT ITEM
+             * -------------> 
+             * Have hero select screne
              * */
-            OptionQueries.MainMenuStart();
 
-            userInput = OptionQueries.HeroSelectionDisplay();
-
-            Console.Clear();
-            OptionQueries.MenuSubMenu();
-
-            //userInput = CharacterCreation.HeroSelectMenu();
-            heroClassTypes = CharacterCreation.ConvertUserHeroTypeToEnum(userInput);
-            userName = CharacterCreation.HeroName();
-
-            Hero playerHero = new Hero(heroClassTypes, userName);
-
-            // while loop for level
-            while (true)
+            do
             {
-                enemyClassType = CharacterCreation.GenerateEnemyType();
-                Enemy enemy = new Enemy(enemyClassType);
-                
-                // while loop for enemy alive
-                while (enemy.IsAlive)
+                MenuQueries.MainMenuStart();
+
+                userInput = MenuQueries.HeroSelectionDisplay();
+
+                MenuQueries.ConsoleClearResetMenu();
+
+                heroClassTypes = CharacterCreation.ConvertUserHeroTypeToEnum(userInput);
+                userName = CharacterCreation.HeroName();
+
+                Hero playerHero = new Hero(heroClassTypes, userName);
+
+                // loop for level
+                while (playerHero.IsAlive)
                 {
+                    MenuQueries.ConsoleClearResetMenu();
 
-                    playerCombatSelecter = OptionQueries.PlayerCombactSelection();
-                    enemyCombatSelecter = enemy.EnemyCombatSelecter();
+                    enemyClassType = CharacterCreation.GenerateEnemyType(stateManager.GenerateEnemyBasedOnCurrentGameLevel());
+                    Enemy enemy = new Enemy(enemyClassType);
 
-                    Console.WriteLine($"Enemy health: {enemy.GettingHealth(enemyClassType)}");
-                    Console.WriteLine($"Player Health: {playerHero.GettingHealth(heroClassTypes)}");
-                    Console.WriteLine();
+                    MenuQueries.BattleDisplayPage(heroClassTypes, playerHero, enemy, enemyClassType, true);
 
-                    if (playerCombatSelecter == 1)
+                    // loop for alive
+                    while (enemy.IsAlive && playerHero.IsAlive)
                     {
-                        if (enemyCombatSelecter == 1)
-                        {
-                            playerHero.AttackEnemy(heroClassTypes, enemy, enemyClassType);
-                            enemy.AttackPlayer(heroClassTypes, playerHero, enemyClassType);
-                        }
-                        else if (enemyCombatSelecter == 2)
-                        {
-                            enemy.EnemyDefend(enemyClassType, true);
-                            playerHero.AttackEnemy(heroClassTypes, enemy, enemyClassType);
-                            enemy.EnemyDefend(enemyClassType, false);
-                        }
+                        Console.WriteLine($"level is {stateManager.GAMELEVEL}");
+                        playerCombatSelecter = MenuQueries.PlayerCombactSelection();
+                        enemyCombatSelecter = stateManager.EnemyCombatSelecter();
 
+                        stateManager.Fighting(heroClassTypes, enemyClassType, stateManager, playerCombatSelecter, enemyCombatSelecter, playerHero, enemy);
+
+                        stateManager.SetGameLevel(enemy.IsAlive, playerHero.IsAlive);
+                        playerHero.EquipItem(itemManager, enemy.IsAlive);
+                        playerHero.PlayerLevelManager(enemy, enemyClassType, heroClassTypes, stateManager);
+
+                        MenuQueries.ConsoleClearResetMenu();
+                        MenuQueries.BattleDisplayPage(heroClassTypes, playerHero, enemy, enemyClassType, false);
                     }
-                    else if (playerCombatSelecter == 2)
-                    {
-                        if (enemyCombatSelecter == 1)
-                        {
-                            playerHero.PlayerDefend(heroClassTypes, true);
-                            enemy.AttackPlayer(heroClassTypes, playerHero, enemyClassType);
-                            playerHero.PlayerDefend(heroClassTypes, false);
-                        }
-                        else if (enemyCombatSelecter == 2)
-                        {
-                            playerHero.PlayerDefend(heroClassTypes, true);
-                            enemy.EnemyDefend(enemyClassType, true);
-                            playerHero.PlayerDefend(heroClassTypes, false);
-                            enemy.EnemyDefend(enemyClassType, false);
-                        }
-
-                    }
-
-
-
-                    Console.WriteLine();
-                    Console.WriteLine($"Enemy health: {enemy.GettingHealth(enemyClassType)}");
-                    Console.WriteLine($"Player Health: {playerHero.GettingHealth(heroClassTypes)}");
-
                 }
-            }
-
-            
+            } while (stateManager.PlayAgain());
         }
+
+        
     }
 }

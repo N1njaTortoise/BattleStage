@@ -4,27 +4,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BattleStage.Equipment.Weapons
+namespace BattleStage.Equipment.Armour
 {
-    class Weapon
+    class Armor
     {
         protected string name;
         protected string description;
 
-        protected int baseDamage;
+        protected int baseDefence;
 
-        public Weapon()
+        public Armor()
         {
-            name = "Base Weapon";
-            description = "Basic weapon to fend of chickens";
-            baseDamage = 1;
+            name = "Base Armour";
+            description = "Basic armour - well call it clothes.";
+            baseDefence = 1;
         }
 
-        public int Damage
+        public int Defence
         {
             get
             {
-                return baseDamage;
+                return baseDefence;
             }
         }
         public string Name
@@ -34,7 +34,7 @@ namespace BattleStage.Equipment.Weapons
                 return name;
             }
         }
-        public string WeaponDescription
+        public string ArmourDescription
         {
             get
             {

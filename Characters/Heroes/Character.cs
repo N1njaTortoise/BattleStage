@@ -21,6 +21,7 @@ namespace BattleStage.Characters
         protected double _dexterityDamageFactor;
         protected double _strengthDamageFactor;
         protected double _isDefendingMultiplier = 2;
+        protected double _levelUpMultiplier = 0.1;
 
         protected bool _isDefending = false;
 
@@ -50,6 +51,7 @@ namespace BattleStage.Characters
             {
                 return _basicstrength;
             }
+            set { _basicstrength = value; }
         }
         public int Dexterity
         {
@@ -64,6 +66,7 @@ namespace BattleStage.Characters
             {
                 return _basicDefence;
             }
+            set { _basicDexterity = value; }
         }
         public int Health
         {
@@ -88,12 +91,18 @@ namespace BattleStage.Characters
             }
         }
 
-        public int Attack()
+        public void LevelUp()
+        {
+            // health dex str
+            _basicHealth = _basicHealth + Convert.ToInt32(_basicHealth * _levelUpMultiplier);
+            _basicstrength = _basicstrength + Convert.ToInt32(_basicstrength * _levelUpMultiplier);
+            _basicDexterity = _basicDexterity + Convert.ToInt32(_basicDexterity * _levelUpMultiplier);
+        }
+        public int Attack(int missFactor)
         {
             int attackDamage = Convert.ToInt32((_strengthDamageFactor * _basicstrength) + (_dexterityDamageFactor * _basicDexterity));
 
-            // Replace 6 with a miss factor percentage
-            if (AttackHit() < 6)
+            if (missFactor <= 8)
             {
                 return attackDamage;
             }
@@ -105,12 +114,12 @@ namespace BattleStage.Characters
             }
         }
 
-        private int AttackHit()
-        {
-            int hitChance = _randomHitChance.Next(1, 11);
+        //private int AttackHit()
+        //{
+        //    int hitChance = _randomHitChance.Next(1, 11);
 
-            return hitChance;
-        }
+        //    return hitChance;
+        //}
 
         public int Defending()
         {

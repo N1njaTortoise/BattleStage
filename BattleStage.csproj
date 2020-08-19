@@ -55,13 +55,36 @@
     <Compile Include="Characters\Scourge\Skeleton.cs" />
     <Compile Include="Characters\Heroes\Swordsman.cs" />
     <Compile Include="Characters\Heroes\Spearman.cs" />
+    <Compile Include="Characters\StateManager.cs" />
     <Compile Include="Enums\Alignment.cs" />
     <Compile Include="Enums\EnemyClassType.cs" />
     <Compile Include="Enums\HeroClassTypes.cs" />
+    <Compile Include="Enums\ItemType.cs" />
+    <Compile Include="Enums\PotionTypes.cs" />
+    <Compile Include="Equipment\Armour\Armor.cs" />
+    <Compile Include="Equipment\Armour\DiamondArmour.cs" />
+    <Compile Include="Equipment\Armour\IronArmour.cs" />
+    <Compile Include="Equipment\Armour\StoneArmour.cs" />
+    <Compile Include="Equipment\Armour\WoodArmour.cs" />
+    <Compile Include="Equipment\ItemManager.cs" />
+    <Compile Include="Equipment\Items\PotionItem.cs" />
+    <Compile Include="Equipment\Weapons\Range\DiamondBow.cs" />
+    <Compile Include="Equipment\Weapons\Range\IronBow.cs" />
+    <Compile Include="Equipment\Weapons\Range\StoneBow.cs" />
+    <Compile Include="Equipment\Weapons\Range\WoodenBow.cs" />
+    <Compile Include="Equipment\Weapons\Spear\DiamondSpear.cs" />
+    <Compile Include="Equipment\Weapons\Spear\IronSpear.cs" />
+    <Compile Include="Equipment\Weapons\Spear\StoneSpear.cs" />
+    <Compile Include="Equipment\Weapons\Sword\DiamondSword.cs" />
+    <Compile Include="Equipment\Weapons\Sword\IronSword.cs" />
+    <Compile Include="Equipment\Weapons\Sword\StoneSword.cs" />
+    <Compile Include="Equipment\Weapons\Sword\WoodenSword.cs" />
     <Compile Include="Equipment\Weapons\Weapon.cs" />
-    <Compile Include="Equipment\Weapons\WoodenSpear.cs" />
+    <Compile Include="Equipment\Weapons\Spear\WoodenSpear.cs" />
+    <Compile Include="MenuInput\Animation.cs" />
+    <Compile Include="Data\AnimationsData.cs" />
     <Compile Include="MenuInput\Input.cs" />
-    <Compile Include="MenuInput\OptionQueries.cs" />
+    <Compile Include="MenuInput\MenuQueries.cs" />
     <Compile Include="MenuInput\Utilities.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -69,9 +92,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Equipment\Armour\" />
-    <Folder Include="Equipment\Items\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

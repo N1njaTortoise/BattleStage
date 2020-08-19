@@ -46,14 +46,30 @@ namespace BattleStage.Characters
             }
         }
 
-        public static EnemyClassType GenerateEnemyType()
+        public static EnemyClassType GenerateEnemyType(int enemyGenerated)
         {
-            Random random = new Random(9);
+            //Random random = new Random();
 
-            // Maximum number of enemey types
-            int randomNumber = random.Next(1, 5);
+            //// Maximum number of enemey types
+            //int randomNumber = random.Next(1, 13);
 
-            switch (randomNumber)
+            //if (randomNumber < 4)
+            //{
+            //    return EnemyClassType.minion;
+            //}
+            //else if (randomNumber >= 4 && randomNumber < 7)
+            //{
+            //        return EnemyClassType.creeper;
+            //}
+            //else if (randomNumber >= 7 && randomNumber < 10)
+            //{
+            //    return EnemyClassType.skeleton;
+            //}
+            //else
+            //{
+            //    return EnemyClassType.orc;
+            //}
+            switch (enemyGenerated)
             {
                 case 1:
                     return EnemyClassType.minion;
@@ -68,6 +84,8 @@ namespace BattleStage.Characters
             }
         }
 
-        
+     
+
+
     }
 }

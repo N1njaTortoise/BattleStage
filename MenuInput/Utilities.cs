@@ -45,19 +45,19 @@ namespace BattleStage.MenuInput
                 Thread.Sleep(timeBetweenFades);
                 Console.Clear();
 
-                OptionQueries.MenuSubMenu();
+                MenuQueries.MenuSubMenu();
 
                 ColorWriteLines(text, ConsoleColor.Gray);
                 Thread.Sleep(timeBetweenFades);
                 Console.Clear();
 
-                OptionQueries.MenuSubMenu();
+                MenuQueries.MenuSubMenu();
 
                 ColorWriteLines(text, ConsoleColor.White);
                 Thread.Sleep(timeBetweenFades);
                 Console.Clear();
 
-                OptionQueries.MenuSubMenu();
+                MenuQueries.MenuSubMenu();
 
                 ColorWriteLines(text, ConsoleColor.Green);
                 Console.ResetColor();
@@ -65,26 +65,45 @@ namespace BattleStage.MenuInput
             else
             {
                 Console.Clear();
-                OptionQueries.MenuSubMenu();
+                MenuQueries.MenuSubMenu();
 
                 ColorWriteLines(text, ConsoleColor.White);
 
                 Thread.Sleep(timeBetweenFades);
                 Console.Clear();
 
-                OptionQueries.MenuSubMenu();
+                MenuQueries.MenuSubMenu();
 
                 ColorWriteLines(text, ConsoleColor.Gray);
                 Thread.Sleep(timeBetweenFades);
                 Console.Clear();
 
-                OptionQueries.MenuSubMenu();
+                MenuQueries.MenuSubMenu();
 
                 ColorWriteLines(text, ConsoleColor.Black);
                 Console.Clear();
                 Console.ResetColor();
 
-                OptionQueries.MenuSubMenu();
+                MenuQueries.MenuSubMenu();
+            }
+        }
+
+        public static void AnimationBattle(string[] animationClip)
+        {
+            int delayBetweenAnimationCycles = 250;
+
+            for (int i = 0; i < animationClip.Length; i++)
+            {
+                ColorWriteLines(animationClip[i], ConsoleColor.Gray);
+                Thread.Sleep(delayBetweenAnimationCycles);
+                MenuQueries.ConsoleClearResetMenu();
+            }
+
+            for (int i = animationClip.Length - 1; i >= 0; i--)
+            {
+                ColorWriteLines(animationClip[i], ConsoleColor.Gray);
+                Thread.Sleep(delayBetweenAnimationCycles);
+                MenuQueries.ConsoleClearResetMenu();
             }
         }
     }
